@@ -62,6 +62,26 @@ functions:
           path: /users
           cors: true
 
+  # Existe um {email} no path!
+  # Isto informa que iremos passar um parametro dinamico na URL chamda pelo Postman.
+  updateUser:
+    handler: fn/user/update.run
+    events:
+      - http:
+          method: put
+          path: /users/{email}
+          cors: true
+
+  # Existe um {email} no path!
+  # Isto informa que iremos passar um parametro dinamico na URL chamda pelo Postman.
+  deleteUser:
+    handler: fn/user/delete.run
+    events:
+      - http:
+          method: delete
+          path: /users/{email}
+          cors: true
+
 resources:
   Resources:
     userTable:
