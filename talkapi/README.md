@@ -1,3 +1,5 @@
+## API básica utilizando Serverless Framework e Lambda
+
 ## ROTAS
 
 GET - /users            ==> Lista todos os usuarios
