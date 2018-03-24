@@ -1,7 +1,7 @@
 const required = require("../util/required");
 const { dynamo } = require("../util/awsConnection");
 
-const DEFAULT_TABLE_NAME = "User";
+const DEFAULT_TABLE_NAME = "Users";
 
 const decodeError = err => {
   if (err && err.code === "ConditionalCheckFailedException")
@@ -41,6 +41,43 @@ class User {
     return this._age;
   }
 
+  delete() {
+    return dynamo
+      .delete({
+        TableName: DEFAULT_TABLE_NAME,
+        Key: {
+          email: this.email
+        }
+      })
+      .promise()
+      .then(() => {
+        return { email: this.email };
+      })
+      .catch(err => decodeError(err));
+  }
+
+  update({nick = required`nick`, age = required`age`}) {
+    return dynamo
+      .update({
+        TableName: DEFAULT_TABLE_NAME,
+        Key: {
+          email: this.email
+        },
+        UpdateExpression: 'set nick = :mynick, age = :age',
+        ExpressionAttributeValues: {
+          ':mynick' : nick,
+          ':age': age
+        }
+      })
+      .promise()
+      .then(() => {
+        this._nick = nick;
+        this._age = age;
+        return this;
+      })
+      .catch(err => decodeError(err));
+  }
+
   toString() {
     console.log(this);
     return { email: this.email, nick: this.nick, age: this.age };
@@ -56,7 +93,7 @@ module.exports.new = ({
     .put({
       TableName: DEFAULT_TABLE_NAME,
       Item: {
-        id: email,
+        email,
         nick,
         age
       },
@@ -76,7 +113,7 @@ module.exports.get = ({ email = required`email` }) => {
     .get({
       TableName: DEFAULT_TABLE_NAME,
       Key: {
-        id: email
+        email
       },
       Expected: {
         id: {
@@ -87,11 +124,11 @@ module.exports.get = ({ email = required`email` }) => {
     .promise()
     .then(
       res =>
-      new User({
-        email: res.Item.id,
-        nick: res.Item.nick,
-        age: res.Item.age
-      })
+        new User({
+          email: res.Item.email,
+          nick: res.Item.nick,
+          age: res.Item.age
+        })
     )
     .catch(err => decodeError(err));
 };

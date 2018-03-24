@@ -6,6 +6,7 @@ module.exports.dispath = ({
   body,
   callback = required`callback`
 }) => {
+  console.log(body)
   callback(error, {
     statusCode: status,
     headers: {

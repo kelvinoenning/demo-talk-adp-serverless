@@ -66,24 +66,40 @@ functions:
           method: get
           cors: true
 
+  v1_user_delete:
+    handler: /handler/user/delete.run
+    events:
+      - http:
+          path: /v1/users/{email}
+          method: delete
+          cors: true
+  
+  v1_user_update:
+    handler: /handler/user/update.run
+    events:
+      - http:
+          path: /v1/users/{email}
+          method: put
+          cors: true
+
 #
 # RECURSOS
 #
 resources:
   Resources:
-    companyTable:
-          Type: 'AWS::DynamoDB::Table'
-          # DependsOn: <tableName>
-          Properties:
-            TableName: User
-            AttributeDefinitions:
-              -
-                AttributeName: id
-                AttributeType: S
-            KeySchema:
-              -
-                AttributeName: id
-                KeyType: HASH
-            ProvisionedThroughput:
-              ReadCapacityUnits: 1
-              WriteCapacityUnits: 1
+    userTable:
+      Type: 'AWS::DynamoDB::Table'
+      # DependsOn: <tableName>
+      Properties:
+        TableName: Users
+        AttributeDefinitions:
+          -
+            AttributeName: email
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: email
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

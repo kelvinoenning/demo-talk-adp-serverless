@@ -7,7 +7,7 @@ const { new: newUser } = require("../../object/User");
 const checkParameters = ({email, nick, age} = {}) => (!email || !nick || !age) ? { status: 401 } : { status: undefined }
 
 module.exports.run = (event, context, callback) => {
-
+  
   let body = toObject(event.body);
 
   let { status } = checkParameters(body);

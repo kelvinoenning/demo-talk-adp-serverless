@@ -14,8 +14,7 @@ module.exports.run = (event, context, callback) => {
   if (status) return dispath({ status, callback });
 
   getUser({ email: body.email })
-    .then(user =>
-      dispath({ status: 200, body: { user: user.toString() }, callback })
-    )
+    .then(user => user.delete())
+    .then(user => dispath({ status: 200, body: { user }, callback }))
     .catch(err => dispath({ status: 200, body: err, callback }));
 };
