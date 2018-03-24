@@ -9,7 +9,7 @@ const dynamo = new aws.DynamoDB.DocumentClient({
 });
 
 // Funcao externalizada para responder a requisicao que foi feita pelo cliente.
-function response(status, body, callback){
+function response(status, body, callback) {
   const response = {
     statusCode: status,
     headers: {
@@ -23,15 +23,14 @@ function response(status, body, callback){
 
 // Funcao Lambda
 module.exports.run = (event, context, callback) => {
-  let body;
 
-  // Converte e valida se o body da requisicao e um JSON;
-  try{
-    body = JSON.parse(event.body);
-  } catch(err) {
-    return response(401, { message: 'Request body was not accepted. Required( Contenty-type: application/json )' }, callback);
+  //Deve ser implementado tratamento de excecao
+  let body = JSON.parse(event.body)
+  
+  if (!body.email || !body.nick) {
+    return response(401, undefined, callback);
   }
-
+ 
   // Salva o usuario no DynamoDB
   dynamo.put(
     {
@@ -42,11 +41,8 @@ module.exports.run = (event, context, callback) => {
       }
     },
     (err, data) => {
-
-      let status = 200;
-      if (err) status = 500;
-
-      return response(status, undefined, callback);
+      if (err) return response(500, err, callback);
+      return response(200, undefined, callback);
     }
   );
 };
