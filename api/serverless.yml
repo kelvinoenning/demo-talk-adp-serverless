@@ -1,0 +1,70 @@
+service: demo-talk-adp-serverless
+
+package:
+  exclude:
+    - OLD/**
+    - .idea/**
+    - .vscode-root/Cache/data_0
+    - .vscode/**
+    - node_modules/aws-sdk/**
+    - node_modules/base64-js/**
+    - node_modules/buffer/**
+    - node_modules/lodash/**
+    - node_modules/crypto-browserify/**
+    - node_modules/ieee754/**
+    - node_modules/isarray/**
+    - node_modules/jmespath/**
+    - node_modules/punycode/**
+    - node_modules/querystring/**
+    - node_modules/sax/**
+    - node_modules/url/**
+    - node_modules/uiid/**
+    - node_modules/xml2js/**
+    - node_modules/xmlbuilder/**
+
+#
+# PROJETO
+#
+provider:
+  name: aws
+  runtime: nodejs6.10
+  memorySize: 128
+
+#
+# FUNCOES LAMBDA
+#
+functions:
+  healthCheck:
+    handler: handler/health.check
+    events:
+      - http:
+          path: /health
+          method: get
+  userNew:
+    handler: handler/user/new.run
+    events:
+      - http:
+          path: /user/new
+          method: post
+
+#
+# RECURSOS
+#
+resources:
+  Resources:
+    companyTable:
+          Type: 'AWS::DynamoDB::Table'
+          # DependsOn: <tableName>
+          Properties:
+            TableName: User
+            AttributeDefinitions:
+              -
+                AttributeName: id
+                AttributeType: S
+            KeySchema:
+              -
+                AttributeName: id
+                KeyType: HASH
+            ProvisionedThroughput:
+              ReadCapacityUnits: 1
+              WriteCapacityUnits: 1
