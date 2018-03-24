@@ -53,6 +53,14 @@ functions:
           method: get
           path: /users/{email}
           cors: true
+  
+  listUser:
+    handler: fn/user/list.run
+    events:
+      - http:
+          method: get
+          path: /users
+          cors: true
 
 resources:
   Resources:
