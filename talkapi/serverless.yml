@@ -25,6 +25,7 @@ package:
 provider:
   name: aws
   runtime: nodejs6.10
+  memorySize: 128
 
 functions:
   healthCheck:
