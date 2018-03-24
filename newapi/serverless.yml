@@ -1,0 +1,61 @@
+service: awsadapcontalk
+
+package:
+  exclude:
+    - OLD/**
+    - .idea/**
+    - .vscode-root/Cache/data_0
+    - .vscode/**
+    - node_modules/aws-sdk/**
+    - node_modules/base64-js/**
+    - node_modules/buffer/**
+    - node_modules/lodash/**
+    - node_modules/crypto-browserify/**
+    - node_modules/ieee754/**
+    - node_modules/isarray/**
+    - node_modules/jmespath/**
+    - node_modules/punycode/**
+    - node_modules/querystring/**
+    - node_modules/sax/**
+    - node_modules/url/**
+    - node_modules/uiid/**
+    - node_modules/xml2js/**
+    - node_modules/xmlbuilder/**
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+functions:
+  healthCheck:
+    handler: fn/health.check
+    events:
+      - http:
+          method: get
+          path: /health
+
+  newUser:
+    handler: fn/user/new.run
+    events:
+      - http:
+          method: post
+          path: /users
+
+resources:
+  Resources:
+    userTable:
+      Type: 'AWS::DynamoDB::Table'
+      # DependsOn: <tableName>
+      Properties:
+        TableName: Users
+        AttributeDefinitions:
+          -
+            AttributeName: email
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: email
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <title>App</title>
 </head>
 
@@ -16,7 +17,13 @@
         var vm = new Vue({
             el: '#app',
             data: {
-                name: 'Test to talk'
+                name: 'Test to talk',
+                url: 'https://tfazui745b.execute-api.us-east-1.amazonaws.com/dev/'
+            },
+            mounted(){
+                axios.get(this.url + 'v1/users')
+                .then(res => console.log('res', res))
+                .catch(err => console.log('err', err))
             }
         });
     </script>
