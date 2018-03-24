@@ -42,8 +42,8 @@ class User {
   }
 
   toString() {
-      console.log(this)
-      return { email: this.email, nick: this.nick, age: this.age}
+    console.log(this);
+    return { email: this.email, nick: this.nick, age: this.age };
   }
 }
 
@@ -68,5 +68,40 @@ module.exports.new = ({
     })
     .promise()
     .then(() => new User({ email, nick, age }))
+    .catch(err => decodeError(err));
+};
+
+module.exports.get = ({ email = required`email` }) => {
+  return dynamo
+    .get({
+      TableName: DEFAULT_TABLE_NAME,
+      Key: {
+        id: email
+      },
+      Expected: {
+        id: {
+          Exists: true
+        }
+      }
+    })
+    .promise()
+    .then(
+      res =>
+      new User({
+        email: res.Item.id,
+        nick: res.Item.nick,
+        age: res.Item.age
+      })
+    )
+    .catch(err => decodeError(err));
+};
+
+module.exports.list = () => {
+  return dynamo
+    .scan({
+      TableName: DEFAULT_TABLE_NAME
+    })
+    .promise()
+    .then(result => result.Items)
     .catch(err => decodeError(err));
 };

@@ -34,18 +34,37 @@ provider:
 # FUNCOES LAMBDA
 #
 functions:
-  healthCheck:
-    handler: handler/health.check
+  v1_health_check:
+    handler: /handler/health.check
     events:
       - http:
-          path: /health
+          path: /v1/health
           method: get
-  userNew:
-    handler: handler/user/new.run
+          cors: true
+          
+  v1_user_new:
+    handler: /handler/user/new.run
     events:
       - http:
-          path: /user/new
+          path: /v1/users
           method: post
+          cors: true
+
+  v1_user_list:
+    handler: /handler/user/list.run
+    events:
+      - http:
+          path: /v1/users
+          method: get
+          cors: true
+
+  v1_user_get:
+    handler: /handler/user/get.run
+    events:
+      - http:
+          path: /v1/users/{email}
+          method: get
+          cors: true
 
 #
 # RECURSOS
