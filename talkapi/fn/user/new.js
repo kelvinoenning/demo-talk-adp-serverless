@@ -9,13 +9,14 @@ const dynamo = new aws.DynamoDB.DocumentClient({
 });
 
 // Funcao externalizada para responder a requisicao que foi feita pelo cliente.
+// Se existir Body para resposta, sempre colocar como formato string.
 function response(status, body, callback) {
   const response = {
     statusCode: status,
     headers: {
       "Access-Control-Allow-Origin": "*"
     },
-    body
+    body: JSON.stringify(body)
   };
 
   callback(null, response);
@@ -32,17 +33,26 @@ module.exports.run = (event, context, callback) => {
   }
  
   // Salva o usuario no DynamoDB
+  // A propriedade <Expect> indica que voce espera que este usuario nao existe no banco! Se existir nao salva!
+  // DOC Dynamo: https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#put-property 
   dynamo.put(
     {
       TableName: "Users",
       Item: {
         email: body.email,
         nick: body.nick
+      },
+      Expected: {
+        email: {
+          Exists: false
+        }
       }
     },
     (err, data) => {
-      if (err) return response(500, err, callback);
-      return response(200, undefined, callback);
+      // O status de resposta em caso de erro, deve ser tratado para não ser somente 401.
+      // O status também pode ser por usuário já criado na base de dados em geral.
+      if (err) return response(401, err, callback);
+      return response(201, undefined, callback);
     }
   );
 };
