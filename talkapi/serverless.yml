@@ -82,6 +82,7 @@ functions:
           path: /users/{email}
           cors: true
 
+# Configuracao da tabela que vamos usar na API
 resources:
   Resources:
     userTable:
