@@ -38,7 +38,6 @@ module.exports.run = (event, context, callback) => {
   }
  
   // Busca o usuario no DynamoDB
-  // A propriedade <Expect> indica que voce espera que este usuario nao existe no banco! Se existir nao salva!
   // DOC Dynamo: https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/DynamoDB/DocumentClient.html#put-property 
   dynamo.get(
     {
