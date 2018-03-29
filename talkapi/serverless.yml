@@ -30,11 +30,11 @@ provider:
 functions:
   healthCheck:
     handler: fn/health.check
-    events:
-      - http:
-          method: get
-          path: /health
-          cors: true
+    events: # Adicionamos o objeto de eventos para a função.
+      - http: # Na lista de eventos adicionamos o evento HTTP.
+          method: get # O evento HTTP pode ser chamado com um GET.
+          path: /health # Atende ao path .../health
+          cors: true # Liberação CORS
 
   newUser:
     handler: fn/user/new.run
